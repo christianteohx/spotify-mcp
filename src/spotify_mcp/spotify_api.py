@@ -282,11 +282,10 @@ class Client:
             raise ValueError("Playlist name is required.")
         
         try:
-            user = self.sp.current_user()
-            user_id = user['id']
-            
-            playlist = self.sp.user_playlist_create(
-                user=user_id,
+            # Use the /v1/me/playlists endpoint. Spotify's older
+            # /v1/users/{user_id}/playlists route can return 403 Forbidden
+            # even when playlist-modify scopes are present.
+            playlist = self.sp.current_user_playlist_create(
                 name=name,
                 public=public,
                 description=description
